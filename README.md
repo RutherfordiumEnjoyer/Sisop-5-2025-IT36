@@ -1,11 +1,11 @@
-# Sisop-5-2025-IT-Template
+# Sisop-5-2025-IT36
 
 ## Kelompok
 
 Nama | NRP
 --- | ---
-Amoes Noland | 5027231028
-Rafi' Afnaan Fathurrahman | 5027231040
+Mohammad Abyan Ranuaji | 5027241106
+Naila Raniyah Hanan | 5027241078
 
 ## Daftar Isi
 
