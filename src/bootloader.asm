@@ -1,41 +1,50 @@
-; bootloader.asm
 bits 16
 
-KERNEL_SEGMENT equ 0x1000 ; kernel will be loaded at 0x1000:0x0000
-KERNEL_SECTORS equ 15     ; kernel will be loaded in 15 sectors maximum
-KERNEL_START   equ 1      ; kernel will be loaded in sector 1
+KERNEL_SEGMENT equ 0x1000
+KERNEL_SECTORS equ 15
+KERNEL_START equ 1
 
-; bootloader code
 bootloader:
-  ; load kernel to memory
-  mov ax, KERNEL_SEGMENT    ; load address of kernel
-  mov es, ax                ; buffer address are in ES:BX
-  mov bx, 0x0000            ; set buffer address to KERNEL_SEGMENT:0x0000
+    mov ax, KERNEL_SEGMENT
+    mov es, ax
+    mov bx, 0x0000
 
-  mov ah, 0x02              ; read disk sectors
-  mov al, KERNEL_SECTORS    ; number of sectors to read
+    mov ah, 0x02
+    mov al, KERNEL_SECTORS
 
-  mov ch, 0x00              ; cylinder number
-  mov cl, KERNEL_START + 1  ; sector number
-  mov dh, 0x00              ; head number
-  mov dl, 0x00              ; read from drive A
+    mov ch, 0x00
+    mov cl, KERNEL_START + 1
+    mov dh, 0x00
+    mov dl, 0x00
 
-  int 0x13                  ; call BIOS interrupts
+    int 0x13
 
-  ; set up segment registers
-  mov ax, KERNEL_SEGMENT
-  mov ds, ax
-  mov es, ax
-  mov ss, ax
+    jc kernel_load_failed
 
-  ; set up stack pointer
-  mov ax, 0xFFF0
-  mov sp, ax
-  mov bp, ax
+    mov ax, KERNEL_SEGMENT
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
 
-  ; jump to kernel
-  jmp KERNEL_SEGMENT:0x0000
+    mov ax, 0xFFF0
+    mov sp, ax
+    mov bp, ax
 
-  ; padding to make bootloader 512 bytes
-  times 510-($-$$) db 0
-  dw 0xAA55
+    jmp KERNEL_SEGMENT:0x0000
+
+kernel_load_failed:
+    mov si, err_msg
+print_loop:
+    lodsb
+    cmp al, 0
+    je halt
+    mov ah, 0x0E
+    int 0x10
+    jmp print_loop
+halt:
+    jmp $
+
+err_msg: db 'X - Kernel Load Failed!', 0
+
+times 510-($-$$) db 0
+dw 0xAA55
