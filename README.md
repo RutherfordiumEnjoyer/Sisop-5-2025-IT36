@@ -179,4 +179,194 @@ https://github.com/user-attachments/assets/1cfa66b1-b2f5-4e3e-a4b2-ec8b012f6fbb
 
 ## Laporan
 
-> Isi sesuai pengerjaan.
+
+---
+
+## 1. Pendahuluan
+
+"EorzeOS" merupakan sebuah sistem operasi fiksi yang dikembangkan untuk mendampingi karakter utama di dunia fantasi bernama Eorzea. Sistem ini menyediakan shell interaktif yang memungkinkan pengguna untuk memberikan perintah yang dapat memengaruhi keadaan terminal dan menjalankan fungsionalitas seperti mengubah nama pengguna, mengatur warna terminal berdasarkan Grand Company, melakukan operasi kalkulasi, hingga merespons perintah dengan jawaban acak.
+
+---
+
+## 2. Fitur yang Diimplementasikan
+
+### 2.1. Echo Command
+
+**Deskripsi:** Shell akan mengulangi kembali setiap input dari pengguna selama perintah tersebut tidak termasuk command valid.
+
+**Contoh:**
+
+```
+user> Hello!
+Hello!
+```
+
+**Cuplikan Kode:**
+
+```c
+void handle_command(char *input) {
+    if (is_valid_command(input)) {
+        execute_command(input);
+    } else {
+        print(input);
+        print("\n");
+    }
+}
+```
+
+### 2.2. Perintah `user`
+
+**Deskripsi:** Mengubah nama pengguna di prompt shell.
+
+**Contoh:**
+
+```
+user> user Tia
+Username changed to Tia
+Tia> user
+Username changed to user
+```
+
+**Cuplikan Kode:**
+
+```c
+void cmd_user(char *arg) {
+    if (arg == NULL || strlen(arg) == 0) {
+        strcpy(current_user, "user");
+        print("Username changed to user\n");
+    } else {
+        strcpy(current_user, arg);
+        print("Username changed to ");
+        print(current_user);
+        print("\n");
+    }
+    update_prompt();
+}
+```
+
+### 2.3. Perintah `grandcompany`
+
+**Deskripsi:** Bergabung dengan Grand Company dan mengubah warna terminal serta prompt shell.
+
+**Contoh:**
+
+```
+gurt> grandcompany maelstrom
+-- terminal clear --
+gurt@Storm> clear
+-- terminal kembali putih --
+```
+
+**Cuplikan Kode:**
+
+```c
+void cmd_grandcompany(char *arg) {
+    if (strcmp(arg, "maelstrom") == 0) {
+        current_gc = GC_MAELSTROM;
+        set_terminal_color(RED);
+        print("\033[2J\033[H"); // clear
+    } else if (strcmp(arg, "twinadder") == 0) {
+        current_gc = GC_TWINADDER;
+        set_terminal_color(YELLOW);
+        print("\033[2J\033[H");
+    } else if (strcmp(arg, "immortalflames") == 0) {
+        current_gc = GC_IMMORTALFLAMES;
+        set_terminal_color(BLUE);
+        print("\033[2J\033[H");
+    } else {
+        print("Unknown grand company\n");
+        return;
+    }
+    update_prompt();
+}
+
+void cmd_clear() {
+    current_gc = GC_NONE;
+    set_terminal_color(WHITE);
+    print("\033[2J\033[H");
+    update_prompt();
+}
+```
+
+### 2.4. Perintah Kalkulator
+
+**Deskripsi:** Melakukan operasi aritmatika dasar dengan dua operand.
+
+**Contoh:**
+
+```
+user> add 4 2
+6
+user> div -6 -2
+3
+```
+
+**Cuplikan Kode:**
+
+```c
+void cmd_math(char *cmd, int a, int b) {
+    if (strcmp(cmd, "add") == 0)
+        printf("%d\n", a + b);
+    else if (strcmp(cmd, "sub") == 0)
+        printf("%d\n", a - b);
+    else if (strcmp(cmd, "mul") == 0)
+        printf("%d\n", a * b);
+    else if (strcmp(cmd, "div") == 0)
+        printf("%d\n", a / b);
+    else
+        printf("Unknown math command\n");
+}
+```
+
+### 2.5. Perintah `yogurt`
+
+**Deskripsi:** Merespons secara acak menggunakan daftar predefined.
+
+**Contoh:**
+
+```
+user> yogurt
+gurt> yo
+user> yogurt
+gurt> sygau
+```
+
+**Cuplikan Kode:**
+
+```c
+const char *responses[] = {"yo", "ts unami gng </3", "sygau"};
+void cmd_yogurt() {
+    int r = random() % 3;
+    printf("gurt> %s\n", responses[r]);
+}
+```
+
+---
+
+## 3. Makefile (Garlond Ironworks)
+
+**Deskripsi:** Makefile digunakan untuk meng-compile seluruh project `EorzeOS`. Terdapat beberapa target utama:
+
+**Isi Makefile:**
+
+```make
+all:
+	@echo Compiling...
+	gcc -c src/*.c -Iinclude -o bin/kernel.o
+	ld -Ttext 0x7C00 -o bin/kernel.bin bin/kernel.o
+
+run:
+	bochs -f bochsrc.txt
+
+clean:
+	rm -f bin/*.o bin/*.bin
+```
+
+---
+
+## 4. Penutup
+
+Sistem "EorzeOS" memberikan pendekatan menyenangkan untuk memahami shell programming, manipulasi string, pencetakan warna terminal, dan penggunaan struktur kontrol. Proyek ini membantu praktikan menguasai dasar interaksi sistem melalui command-line dan perintah custom dalam OS sederhana.
+
+
+
