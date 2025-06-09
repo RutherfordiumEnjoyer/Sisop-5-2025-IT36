@@ -364,7 +364,21 @@ clean:
 
 ---
 
-## 4. Penutup
+## 4. Laporan
+
+Saat mengerjakan soal nomor 6 terdapat masalah dimana saat user menginputkan kata "yogurt", outputnya mengeluarkan tulisan: user> yo, sygau, dan ts unami gng </3 seperti foto berikut:
+
+  ![Image](https://github.com/user-attachments/assets/b0e6dc22-5a64-47e5-81a1-d369c32f6ecb)
+
+Dibagian shell.c pada fungsi executeCommand, terdapat masalah di bagian pengecekan command "yogurt" di mana prompt "gurt> " tidak muncul sebagai output. Setelah diperbaiki dengan menambahkan:
+```
+    } else if (strcmp(cmd, "yogurt")) {
+        printString("gurt> "); // Cetak prompt khusus "gurt> "
+        randomAnswer();
+```
+Setelah dilakukan perbaikan, fungsi sudah bekerja dengan baik dan dapat menjawab soal nomor 6.
+
+## 5. Penutup
 
 Sistem "EorzeOS" memberikan pendekatan menyenangkan untuk memahami shell programming, manipulasi string, pencetakan warna terminal, dan penggunaan struktur kontrol. Proyek ini membantu praktikan menguasai dasar interaksi sistem melalui command-line dan perintah custom dalam OS sederhana.
 
